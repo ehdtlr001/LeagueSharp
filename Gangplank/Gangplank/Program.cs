@@ -257,6 +257,7 @@ namespace Gangplank
         {
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical, true, HeroManager.Enemies.Where(e => e.IsInvulnerable));
             var ePrediction = Prediction.GetPrediction(target, 1f).CastPosition;
+            var e2Prediction = Prediction.GetPrediction(target, 1f).CastPosition + 350;
             var nbar = NearestBomb(Player.ServerPosition.To2D());
 
             // ITEMS
@@ -304,6 +305,8 @@ namespace Gangplank
             if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range || NearestBomb(target.Position.To2D()).BombObj.Distance(target) > (ExplosionRange-50))) // 2 Bomb
             {
                 E.Cast(ePrediction);
+                BarrelManager();
+                E.Cast(e2Prediction);
             }
             if (R.Level == 1 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && E.IsReady()) // 3 Bomb
             {
