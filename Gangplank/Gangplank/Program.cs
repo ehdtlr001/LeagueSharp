@@ -41,7 +41,7 @@ namespace Gangplank
 
             var comboMenu = new Menu("Combo", "gangplank.menu.combo");
             comboMenu.AddItem(new MenuItem("gangplank.menu.combo.q", "Use Q = ON"));
-            comboMenu.AddItem(new MenuItem("gangplank.menu.combo.w", "Use W = ON"));
+            comboMenu.AddItem(new MenuItem("gangplank.menu.combo.e", "Use E = ON"));
             comboMenu.AddItem(new MenuItem("gangplank.menu.combo.r", "Use R").SetValue(true));
             comboMenu.AddItem(new MenuItem("gangplank.menu.combo.rmin", "Minimum enemies to cast R").SetTooltip("Minimum enemies to hit with R in combo").SetValue(new Slider(2, 1, 5)));
 
@@ -94,22 +94,6 @@ namespace Gangplank
             miscMenu.AddItem(new MenuItem("gangplank.menu.misc.rks", "Use R to KillSteal").SetTooltip("If on, will try to KS on the whole map").SetValue(false));
             miscMenu.AddItem(new MenuItem("gangplank.menu.misc.rksoffinfo", "Ks Notification").SetTooltip("Use it if you want to manually ks, it will show a notification when killable").SetValue(true));
 
-            // Items Manager Menu
-            var itemManagerMenu = new Menu("Items Manager", "gangplank.menu.item");
-            var potionManagerMenu = new Menu("Potions", "gangplank.menu.item.potion");
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.enabled", "Enabled").SetTooltip("If off, won't use potions").SetValue(true));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.hp", "Health Potion").SetValue(true));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.hphealth", "Health %").SetTooltip("If under, will use Health potion").SetValue(new Slider(60)));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.biscuit", "Biscuit").SetValue(true));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.biscuithealth", "Health %").SetTooltip("If under, will use Biscuit of rejuvenation").SetValue(new Slider(60)));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.cryst", "Crystalline Flask").SetValue(true));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.crysthealth", "Health %").SetTooltip("If under, will use Crystalline Flask").SetValue(new Slider(60)));
-            potionManagerMenu.AddItem(new MenuItem("gangplank.menu.item.potion.crystmana", "Mana %").SetTooltip("If under, will use Crystalline Flask").SetValue(new Slider(30)));
-
-            itemManagerMenu.AddItem(new MenuItem("gangplank.menu.item.youmuu", "Use Youmuu's Ghostblade").SetTooltip("Use Youmuu in Combo").SetValue(true));
-            itemManagerMenu.AddItem(new MenuItem("gangplank.menu.item.hydra", "Use Ravenous Hydra").SetTooltip("Use Hydra to clear and in Combo").SetValue(true));
-            itemManagerMenu.AddItem(new MenuItem("gangplank.menu.item.tiamat", "Use Tiamat").SetTooltip("Use Tiamat to clear and in Combo").SetValue(true));
-
             // Drawing Menu
             Menu drawingMenu = new Menu("Drawing", "gangplank.menu.drawing");
             drawingMenu.AddItem(new MenuItem("gangplank.menu.drawing.enabled", "Enabled").SetTooltip("If off, will block gangplank drawings").SetValue(true));
@@ -123,8 +107,6 @@ namespace Gangplank
             _menu.AddSubMenu(harassMenu);
             _menu.AddSubMenu(farmMenu);
             _menu.AddSubMenu(miscMenu);
-            _menu.AddSubMenu(itemManagerMenu);
-            itemManagerMenu.AddSubMenu(potionManagerMenu);
             miscMenu.AddSubMenu(barrelManagerMenu);
             miscMenu.AddSubMenu(cleanserManagerMenu);
             _menu.AddSubMenu(drawingMenu);
@@ -245,11 +227,6 @@ namespace Gangplank
             {
                 BarrelManager();
             }
-            if (GetBool("gangplank.menu.item.potion.enabled"))
-            {
-                Potion();
-            }
-
         }
 
         // TODO rework the logic of combo, especially if already barrel manually placed
@@ -260,42 +237,6 @@ namespace Gangplank
             var e2Prediction = Prediction.GetPrediction(target, 1f).CastPosition + 350;
             var nbar = NearestBomb(Player.ServerPosition.To2D());
 
-            // ITEMS
-            if (GetBool("gangplank.menu.item.youmuu") && HeroManager.Enemies != null && Items.HasItem(3142) && Items.CanUseItem(3142))
-            {
-                foreach (var e in HeroManager.Enemies)
-                {
-                    if (e.Distance(Player) <= Player.AttackRange + 50)
-                    {
-                        Items.UseItem(3142); //youmuu gb
-                    }
-                }
-            }
-            if (GetBool("gangplank.menu.item.hydra") && HeroManager.Enemies != null &&
-                Items.HasItem(3074) && Items.CanUseItem(3074))
-            {
-                foreach (var e in HeroManager.Enemies)
-                {
-                    if (e.Distance(Player) <= 400)
-                    {
-                        Items.UseItem(3072); //ravenous hydra
-                    }
-                }
-            }
-            if (GetBool("gangplank.menu.item.tiamat") && HeroManager.Enemies != null &&
-               Items.HasItem(3077) && Items.CanUseItem(3077))
-            {
-                foreach (var e in HeroManager.Enemies)
-                {
-                    if (e.Distance(Player) <= 400)
-                    {
-                        Items.UseItem(3077); //tiamat
-                    }
-                }
-            }
-
-
-
             if (target == null) return;
             if ((E.Instance.Ammo == 0 || E.Level < 1) && Q.IsReady() && Q.IsInRange(target) && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > Q.Range))
             {
@@ -304,13 +245,7 @@ namespace Gangplank
 
             if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range)) // 2 Bomb
             {
-                if(NearestBomb(target.Position.To2D()).BombObj.Distance(target) > (ExplosionRange - 50))
-                    E.Cast(ePrediction);
-                else
-                {
-                    BarrelManager();
-                    E.Cast(e2Prediction);
-                }
+                BarrelLinkManager();
             }
             if (R.Level == 1 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && E.IsReady()) // 3 Bomb
             {
@@ -426,22 +361,6 @@ namespace Gangplank
             var minions = MinionManager.GetMinions(Q.Range).Where(m => m.Health > 3).ToList();
             var jungleMobs = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Neutral).Where(j => j.Health > 3).ToList();
             minions.AddRange(jungleMobs);
-
-            // Items to clear
-            if (GetBool("gangplank.menu.item.hydra") &&
-                (MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 390).Count > 2 || MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 390, MinionTypes.All, MinionTeam.Neutral).Count >= 1) &&
-                Items.HasItem(3074) &&
-                Items.CanUseItem(3074))
-            {
-                Items.UseItem(3074); //hydra, range of active = 400
-            }
-            if (GetBool("gangplank.menu.item.tiamat") &&
-                (MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 390).Count > 2 || MinionManager.GetMinions(ObjectManager.Player.ServerPosition, 390, MinionTypes.All, MinionTeam.Neutral).Count >= 1) &&
-                Items.HasItem(3077) &&
-                Items.CanUseItem(3077))
-            {
-                Items.UseItem(3077); //tiamat, range of active = 400
-            }
 
             if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && GetBool("gangplank.menu.farm.ewc") && E.IsReady())
             {
@@ -699,45 +618,26 @@ namespace Gangplank
                     k.BombObj.IsTargetable)
                     Player.IssueOrder(GameObjectOrder.AttackUnit, k.BombObj);
             }
-
         }
 
-        private static void Potion()
+        private static void BarrelLinkManager()
         {
-            if (Player.InFountain()) return;
-            if (Player.IsRecalling()) return;
-            if (Player.InShop()) return;
-            if (GetBool("gangplank.menu.item.potion.hp") &&
-                Player.HealthPercent <= Getslider("gangplank.menu.item.potion.hphealth") &&
-                (Items.HasItem(2003)|| Items.HasItem(LeagueSharp.Common.Data.ItemData.Refillable_Potion.Id)))
-            {
-                if (Player.HasBuff("RegenerationPotion")) return;
-                if (Player.HasBuff("ItemCrystalFlask")) return;
+            if (E.Instance.Ammo == 0 || E.Level < 1) return;
 
-                Items.UseItem(2003);
-                Items.UseItem(LeagueSharp.Common.Data.ItemData.Refillable_Potion.Id);
-            }
-            if (GetBool("gangplank.menu.item.potion.biscuit") &&
-            Player.HealthPercent <= Getslider("gangplank.menu.item.potion.biscuithealth") &&
-            Items.HasItem(2010))
+            var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical, true, HeroManager.Enemies.Where(e => e.IsInvulnerable));
+            var ePrediction = Prediction.GetPrediction(target, 1f).CastPosition;
+            var nbar = NearestBomb(Player.ServerPosition.To2D());
+                        
+            if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) > ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
             {
-                if (Player.HasBuff("ItemMiniRegenPotion")) return;
-
-                Items.UseItem(2010);
+                ePrediction = Prediction.GetPrediction(target, 1f).CastPosition;
             }
-            if (GetBool("gangplank.menu.item.potion.cryst") &&
-            ((Player.HealthPercent <= Getslider("gangplank.menu.item.potion.crysthealth") &&
-            Player.ManaPercent <= Getslider("gangplank.menu.item.potion.crystmana")) ||
-            Player.HealthPercent <= Getslider("gangplank.menu.item.potion.crysthealth") / 2 ||
-            Player.ManaPercent <= Getslider("gangplank.menu.item.potion.crystmana") / 2) &&
-            (Items.HasItem(LeagueSharp.Common.Data.ItemData.Corrupting_Potion.Id) || Items.HasItem(LeagueSharp.Common.Data.ItemData.Hunters_Potion.Id)))
+            if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) < ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
             {
-                //if (Player.HasBuff("ItemCrystalFlaskJungle")) return;
-                //if (Player.HasBuff("ItemDarkCrystalFlask")) return;
-
-                Items.UseItem(LeagueSharp.Common.Data.ItemData.Corrupting_Potion.Id);
-                Items.UseItem(LeagueSharp.Common.Data.ItemData.Hunters_Potion.Id);
+                ePrediction = Prediction.GetPrediction(target, 10f).CastPosition;
             }
+
+            E.Cast(ePrediction);
         }
 
         private static Bomb NearestBomb(Vector2 pos)
