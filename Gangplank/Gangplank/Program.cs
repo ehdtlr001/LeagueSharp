@@ -732,8 +732,8 @@ namespace Gangplank
             Player.ManaPercent <= Getslider("gangplank.menu.item.potion.crystmana") / 2) &&
             (Items.HasItem(LeagueSharp.Common.Data.ItemData.Corrupting_Potion.Id) || Items.HasItem(LeagueSharp.Common.Data.ItemData.Hunters_Potion.Id)))
             {
-                if (Player.HasBuff("ItemCrystalFlaskJungle")) return;
-                if (Player.HasBuff("ItemDarkCrystalFlask")) return;
+                //if (Player.HasBuff("ItemCrystalFlaskJungle")) return;
+                //if (Player.HasBuff("ItemDarkCrystalFlask")) return;
 
                 Items.UseItem(LeagueSharp.Common.Data.ItemData.Corrupting_Potion.Id);
                 Items.UseItem(LeagueSharp.Common.Data.ItemData.Hunters_Potion.Id);
