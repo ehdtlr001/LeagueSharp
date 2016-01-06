@@ -634,7 +634,7 @@ namespace Gangplank
             }
             if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) < ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
             {
-                ePrediction = Prediction.GetPrediction(target, 10f).CastPosition;
+                ePrediction = Prediction.GetPrediction(target, 20f).CastPosition;
             }
 
             E.Cast(ePrediction);
