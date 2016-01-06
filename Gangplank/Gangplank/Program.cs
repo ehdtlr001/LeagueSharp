@@ -243,7 +243,7 @@ namespace Gangplank
                 Q.CastOnUnit(target);
             }
 
-            if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range)) // 2 Bomb
+            if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range)) // 2 Bomb
             {
                 BarrelLinkManager();
             }/*
@@ -305,7 +305,7 @@ namespace Gangplank
                     }
                     E.Cast(ePrediction);
                 }
-            }*/     
+            }     */
             //Extend if possible and if the number of enemies is below 3
             if (Player.GetEnemiesInRange(E.Range).Count < 3 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false)
             {
@@ -316,7 +316,7 @@ namespace Gangplank
                         var prediction = Prediction.GetPrediction(target, 0.8f).CastPosition;
                         if (nbar.BombObj.Distance(prediction) < LinkRange)
                         {
-                            E.Cast(prediction);
+                            //E.Cast(prediction);
                             // if (Player.Level < 7 && nbar.BombObj.Health < 2)
                             // {
                             //    Q.Cast(nbar.BombObj);
