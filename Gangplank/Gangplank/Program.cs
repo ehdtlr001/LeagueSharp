@@ -302,11 +302,15 @@ namespace Gangplank
                 Q.CastOnUnit(target);
             }
 
-            if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range || NearestBomb(target.Position.To2D()).BombObj.Distance(target) > (ExplosionRange-50))) // 2 Bomb
+            if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range)) // 2 Bomb
             {
-                E.Cast(ePrediction);
-                BarrelManager();
-                E.Cast(e2Prediction);
+                if(NearestBomb(target.Position.To2D()).BombObj.Distance(target) > (ExplosionRange - 50))
+                    E.Cast(ePrediction);
+                else
+                {
+                    BarrelManager();
+                    E.Cast(e2Prediction);
+                }
             }
             if (R.Level == 1 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && E.IsReady()) // 3 Bomb
             {
