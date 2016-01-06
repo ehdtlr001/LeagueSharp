@@ -246,7 +246,7 @@ namespace Gangplank
             if (GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && R.Level == 0 && E.IsReady() && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range)) // 2 Bomb
             {
                 BarrelLinkManager();
-            }
+            }/*
             if (R.Level == 1 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false && E.IsReady()) // 3 Bomb
             {
                 if ((LiveBarrels.Count == 0 || nbar.BombObj.Distance(Player) > Q.Range) && E.Instance.Ammo >= 3)
@@ -305,7 +305,7 @@ namespace Gangplank
                     }
                     E.Cast(ePrediction);
                 }
-            }
+            }*/     
             //Extend if possible and if the number of enemies is below 3
             if (Player.GetEnemiesInRange(E.Range).Count < 3 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false)
             {
@@ -353,7 +353,6 @@ namespace Gangplank
                 R.Cast(Prediction.GetPrediction(target, R.Delay).CastPosition);
             }
             BarrelManager();
-
         }
 
         private static void WaveClear()
@@ -625,19 +624,16 @@ namespace Gangplank
             if (E.Instance.Ammo == 0 || E.Level < 1) return;
 
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical, true, HeroManager.Enemies.Where(e => e.IsInvulnerable));
-            var ePrediction = Prediction.GetPrediction(target, 1f).CastPosition;
             var nbar = NearestBomb(Player.ServerPosition.To2D());
                         
             if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) > ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
             {
-                ePrediction = Prediction.GetPrediction(target, 1f).CastPosition;
+                E.Cast(Prediction.GetPrediction(target, 1f).CastPosition);
             }
             if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) < ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
             {
-                ePrediction = Prediction.GetPrediction(target, 20f).CastPosition;
+                E.Cast(Prediction.GetPrediction(target, 20f).CastPosition);
             }
-
-            E.Cast(ePrediction);
         }
 
         private static Bomb NearestBomb(Vector2 pos)
