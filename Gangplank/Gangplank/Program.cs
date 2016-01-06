@@ -305,7 +305,7 @@ namespace Gangplank
                     }
                     E.Cast(ePrediction);
                 }
-            }     */
+            }     
             //Extend if possible and if the number of enemies is below 3
             if (Player.GetEnemiesInRange(E.Range).Count < 3 && GetBool("gangplank.menu.misc.barrelmanager.edisabled") == false)
             {
@@ -346,7 +346,7 @@ namespace Gangplank
                         }
                     }
                 }
-            }
+            }*/
 
             if (GetBool("gangplank.menu.combo.r") && R.IsReady() && target.GetEnemiesInRange(600).Count + 1 > Getslider("gangplank.menu.combo.rmin") && target.HealthPercent < 30)
             {
@@ -630,7 +630,7 @@ namespace Gangplank
             {
                 E.Cast(Prediction.GetPrediction(target, 1f).CastPosition);
             }
-            if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) < ExplosionRange && (LiveBarrels.Count == 0 || NearestBomb(Player.Position.To2D()).BombObj.Distance(Player) > E.Range))
+            else if (E.IsReady() && NearestBomb(target.Position.To2D()).BombObj.Distance(target) < ExplosionRange)
             {
                 E.Cast(Prediction.GetPrediction(target, 20f).CastPosition);
             }
