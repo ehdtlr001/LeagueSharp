@@ -201,7 +201,7 @@ namespace Brand
             var Em = MenuIni.SubMenu("Combo").Item("Use_E").GetValue<bool>();
             var Rm = MenuIni.SubMenu("Combo").Item("Use_R").GetValue<bool>();
             var Qcoll = Q.GetPrediction(target).CollisionObjects.OrderBy(unit => unit.Distance(Player.ServerPosition)).FirstOrDefault();
-            var QcollC = (Qcoll.Distance(target) > 55) ? true : false;
+            var QcollC = (Qcoll.Distance(target) < 55) ? true : false;
             var Qd = Damage.GetSpellDamage(Player, target, SpellSlot.Q);
             var Rd = Damage.GetSpellDamage(Player, target, SpellSlot.R);
             var Igd = Damage.GetSummonerSpellDamage(Player, target, Damage.SummonerSpell.Ignite);
