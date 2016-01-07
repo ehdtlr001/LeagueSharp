@@ -243,7 +243,7 @@ namespace Brand
                         R.CastOnUnit(target);
                 }
             }
-            else if (Player.Distance(target.Position) < W.Range)
+            else
             {
                 if (W.IsReady() && Wm)
                     W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
@@ -253,12 +253,7 @@ namespace Brand
                     R.CastOnUnit(target);
                 else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                     R.CastOnUnit(target);
-            }
-            else if (target.IsValidTarget(Q.Range))
-            {
-                if (Qd > target.Health || target.HasBuff("brandablaze"))
-                    Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
-            }
+            }           
 
             if(Igd > target.Health)
                 _Ignite.CastOnUnit(target);
