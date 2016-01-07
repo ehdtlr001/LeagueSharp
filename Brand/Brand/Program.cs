@@ -32,7 +32,7 @@ namespace Brand
         {
             if (Player.ChampionName != "Brand") return;
 
-            Q.SetSkillshot(0.625f, 50f, 1600f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.625f, 50f, 1550f, true, SkillshotType.SkillshotLine);
             W.SetSkillshot(1f, 240f, int.MaxValue, false, SkillshotType.SkillshotCircle);
 
             var Ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
@@ -154,6 +154,10 @@ namespace Brand
             }
             else
             {
+                if (W.IsReady() && Q.IsReady())
+                {
+                    W.Cast(sender);
+                }
                 if (E.IsReady() && Q.IsReady())
                 {
                     E.CastOnUnit(sender);
@@ -184,7 +188,7 @@ namespace Brand
             if (MenuIni.SubMenu("Harass").Item("Use_E").GetValue<bool>())
                 if (E.IsReady() && target.IsValidTarget(E.Range))
                     E.CastOnUnit(target);
-            if (MenuIni.SubMenu("Harass").Item("Use_Q").GetValue<bool>())
+            if (MenuIni.SubMenu("Combo").Item("Use_Q").GetValue<bool>())
                 if (Q.IsReady() && target.IsValidTarget(Q.Range))
                     Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
             if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
@@ -213,7 +217,7 @@ namespace Brand
                 {
                     if (GetDamage(target) > target.Health)
                         _Ignite.CastOnUnit(target);
-                    if (Player.Distance(target.Position) > 300)
+                    if (Player.Distance(target.ServerPosition) > 300)
                     {
                         Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                         E.CastOnUnit(target);
