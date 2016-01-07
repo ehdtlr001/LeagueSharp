@@ -52,18 +52,18 @@ namespace Brand
             MenuIni.AddSubMenu(targetSelectorMenu);
 
             var Combo = new Menu("Combo", "Combo");
-            Combo.AddItem(new MenuItem("Use_Q", "Use_Q").SetValue(true));
-            Combo.AddItem(new MenuItem("Use_W", "Use_W").SetValue(true));
-            Combo.AddItem(new MenuItem("Use_E", "Use_E").SetValue(true));
-            Combo.AddItem(new MenuItem("Use_R", "Use_R").SetValue(true));
+            Combo.AddItem(new MenuItem("CUse_Q", "CUse_Q").SetValue(true));
+            Combo.AddItem(new MenuItem("CUse_W", "CUse_W").SetValue(true));
+            Combo.AddItem(new MenuItem("CUse_E", "CUse_E").SetValue(true));
+            Combo.AddItem(new MenuItem("CUse_R", "CUse_R").SetValue(true));
             Combo.AddItem(new MenuItem("Q_HitChance", "Q_HitChance").SetValue(new Slider(6, 1, 6)));
             Combo.AddItem(new MenuItem("W_HitChance", "W_HitChance").SetValue(new Slider(6, 1, 6)));
             MenuIni.AddSubMenu(Combo);
 
             var Harass = new Menu("Harass", "Harass");
-            Harass.AddItem(new MenuItem("Use_Q", "Use_Q").SetValue(true));
-            Harass.AddItem(new MenuItem("Use_W", "Use_W").SetValue(true));
-            Harass.AddItem(new MenuItem("Use_E", "Use_E").SetValue(true));
+            Harass.AddItem(new MenuItem("HUse_Q", "HUse_Q").SetValue(true));
+            Harass.AddItem(new MenuItem("HUse_W", "HUse_W").SetValue(true));
+            Harass.AddItem(new MenuItem("HUse_E", "HUse_E").SetValue(true));
             Harass.AddItem(new MenuItem("Q_HitChance", "Q_HitChance").SetValue(new Slider(6, 1, 6)));
             Harass.AddItem(new MenuItem("W_HitChance", "W_HitChance").SetValue(new Slider(6, 1, 6)));
             MenuIni.AddSubMenu(Harass);
@@ -181,19 +181,20 @@ namespace Brand
                 if (E.IsReady() && Q.IsReady())
                 {
                     E.CastOnUnit(gapcloser.Sender);
+                    Q.Cast(gapcloser.Sender);
                 }
             }
         }
 
         private static void Harass(Obj_AI_Hero target)
         {
-            if (MenuIni.SubMenu("Harass").Item("Use_E").GetValue<bool>())
+            if (MenuIni.SubMenu("Harass").Item("HUse_E").GetValue<bool>())
                 if (E.IsReady() && target.IsValidTarget(E.Range))
                     E.CastOnUnit(target);
-            if (MenuIni.SubMenu("Harass").Item("Use_Q").GetValue<bool>())
+            if (MenuIni.SubMenu("Harass").Item("HUse_Q").GetValue<bool>())
                 if (Q.IsReady() && target.IsValidTarget(Q.Range))
                     Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
-            if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
+            if (MenuIni.SubMenu("Harass").Item("HUse_W").GetValue<bool>())
                 if (W.IsReady() && target.IsValidTarget(W.Range))
                     W.Cast(PreCastPos(target,0.4f));
         }
@@ -202,10 +203,10 @@ namespace Brand
         {
             if (target == null) return;
 
-            var Qm = MenuIni.SubMenu("Combo").Item("Use_Q").GetValue<bool>();
-            var Wm = MenuIni.SubMenu("Combo").Item("Use_W").GetValue<bool>();
-            var Em = MenuIni.SubMenu("Combo").Item("Use_E").GetValue<bool>();
-            var Rm = MenuIni.SubMenu("Combo").Item("Use_R").GetValue<bool>();
+            var Qm = MenuIni.SubMenu("Combo").Item("CUse_Q").GetValue<bool>();
+            var Wm = MenuIni.SubMenu("Combo").Item("CUse_W").GetValue<bool>();
+            var Em = MenuIni.SubMenu("Combo").Item("CUse_E").GetValue<bool>();
+            var Rm = MenuIni.SubMenu("Combo").Item("CUse_R").GetValue<bool>();
             var Pd = Damage.CalcDamage(Player, target, Damage.DamageType.Magical, (.08) * target.MaxHealth);
             var Qd = Damage.GetSpellDamage(Player, target, SpellSlot.Q);
             var Rd = Damage.GetSpellDamage(Player, target, SpellSlot.R);
