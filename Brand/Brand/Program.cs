@@ -202,13 +202,14 @@ namespace Brand
             var Rm = MenuIni.SubMenu("Combo").Item("Use_R").GetValue<bool>();
             var Qcoll = Q.GetPrediction(target).CollisionObjects.OrderBy(unit => unit.Distance(Player.ServerPosition)).FirstOrDefault();
             var QcollC = (Qcoll.Distance(target) > 55) ? true : false;
+            var Pd = Damage.CalcDamage(Player, target, Damage.DamageType.Magical, (.08) * target.MaxHealth);
             var Qd = Damage.GetSpellDamage(Player, target, SpellSlot.Q);
             var Rd = Damage.GetSpellDamage(Player, target, SpellSlot.R);
             var Igd = Damage.GetSummonerSpellDamage(Player, target, Damage.SummonerSpell.Ignite);
 
             if (Player.Distance(target.Position) < E.Range)
             {
-                if (E.IsReady() && Em && target.IsValidTarget(E.Range) && Q.IsReady() && Qm && W.IsReady() && Wm)
+                if (target.IsValidTarget(E.Range))
                 {
                     if (GetDamage(target) > target.Health)
                         _Ignite.CastOnUnit(target);
@@ -224,9 +225,9 @@ namespace Brand
                         Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                         W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);                        
                     }
-                    if (Rd >= target.Health && R.IsReady() && Rm)
+                    if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
-                    else if (Rd+Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                    else if (Rd+Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                 }
                 else
@@ -235,11 +236,11 @@ namespace Brand
                         E.CastOnUnit(target);
                     if (W.IsReady() && Wm)
                         W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
-                    if (Qd > target.Health || target.HasBuff("brandablaze"))
+                    if (Qd+Pd > target.Health || target.HasBuff("brandablaze"))
                         Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);                    
-                    if (Rd >= target.Health && R.IsReady() && Rm)
+                    if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
-                    else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                    else if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                 }
             }
@@ -247,11 +248,11 @@ namespace Brand
             {
                 if (W.IsReady() && Wm)
                     W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
-                if (Qd > target.Health || target.HasBuff("brandablaze"))
+                if (Qd+Pd > target.Health || target.HasBuff("brandablaze"))
                     Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
-                if (Rd >= target.Health && R.IsReady() && Rm)
+                if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                     R.CastOnUnit(target);
-                else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                else if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                     R.CastOnUnit(target);
             }           
 
