@@ -36,10 +36,7 @@ namespace Brand
             Q.SetSkillshot(0.625f, 50f, 1550f, true, SkillshotType.SkillshotLine);
             Qn.SetSkillshot(0.625f, 50f, 1550f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(1f, 240f, int.MaxValue, false, SkillshotType.SkillshotCircle);
-
-            var Ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
-            if (Ignite != null) _Ignite.Slot = Ignite.Slot;
-
+                        
             MenuIni = new Menu("SN Brand", "SN Brand", true);
             MenuIni.AddToMainMenu();
 
@@ -84,7 +81,6 @@ namespace Brand
             Draw.AddItem(new MenuItem("Draw_W", "Draw_W").SetValue(new Circle(true, Color.Green)));
             Draw.AddItem(new MenuItem("Draw_E", "Draw_E").SetValue(new Circle(true, Color.Green)));
             Draw.AddItem(new MenuItem("Draw_R", "Draw_R").SetValue(new Circle(true, Color.Green)));
-            Draw.AddItem(new MenuItem("Draw_Damage", "Draw_Damage").SetValue(true));
             MenuIni.AddSubMenu(Draw);
 
             Game.OnUpdate += OnUpdate;
@@ -97,7 +93,11 @@ namespace Brand
         {
             if (Player.IsDead) return;
 
-            Utility.HpBarDamageIndicator.Enabled = MenuIni.SubMenu("Draw").Item("Draw_Damage").GetValue<bool>();
+            var Ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
+            if (Ignite != null && MenuIni.SubMenu("Misc").Item("Ignite").GetValue<bool>())
+                _Ignite.Slot = Ignite.Slot;
+            else
+                _Ignite.Slot = SpellSlot.Unknown;
 
             Target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var activeOrbwalker = orbwalker.ActiveMode;
