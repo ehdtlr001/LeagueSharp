@@ -63,7 +63,7 @@ namespace Brand
             var Harass = new Menu("Harass", "Harass");
             Harass.AddItem(new MenuItem("Use_Q", "Use_Q").SetValue(true));
             Harass.AddItem(new MenuItem("Use_W", "Use_W").SetValue(true));
-            Harass.AddItem(new MenuItem("Use_E", "Use_E").SetValue(false));
+            Harass.AddItem(new MenuItem("Use_E", "Use_E").SetValue(true));
             Harass.AddItem(new MenuItem("Q_HitChance", "Q_HitChance").SetValue(new Slider(6, 1, 6)));
             Harass.AddItem(new MenuItem("W_HitChance", "W_HitChance").SetValue(new Slider(6, 1, 6)));
             MenuIni.AddSubMenu(Harass);
@@ -230,7 +230,7 @@ namespace Brand
                             Qn.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                     }
 
-                    if (Player.Distance(target.ServerPosition) >= 200)
+                    if (Player.Distance(target.ServerPosition) >= 300)
                     {
                         if (Q.IsReady() && Qm && E.IsReady() && Em)
                             Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
