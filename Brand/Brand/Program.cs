@@ -195,7 +195,7 @@ namespace Brand
                     Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
             if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
                 if (W.IsReady() && target.IsValidTarget(W.Range))
-                    W.CastIfHitchanceEquals(target, Hitchance("Harass", "W_HitChance"), true);
+                    W.Cast(PreCastPos(target,0.6f));
         }
 
         private static void Combo(Obj_AI_Hero target)
@@ -279,6 +279,38 @@ namespace Brand
 
             if(Igd > target.Health)
                 _Ignite.CastOnUnit(target);
+        }
+
+        private static Vector3 PreCastPos(Obj_AI_Hero Hero, float Delay)
+        {
+            float value = 0f;
+            if (Hero.IsFacing(Player))
+            {
+                value = (50f - Hero.BoundingRadius);
+            }
+            else
+            {
+                value = -(100f - Hero.BoundingRadius);
+            }
+            var distance = Delay * Hero.MoveSpeed + value;
+            var path = Hero.GetWaypoints();
+
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                var a = path[i];
+                var b = path[i + 1];
+                var d = a.Distance(b);
+
+                if (d < distance)
+                {
+                    distance -= d;
+                }
+                else
+                {
+                    return (a + distance * (b - a).Normalized()).To3D();
+                }
+            }
+            return (path[path.Count - 1]).To3D();
         }
 
         private static void Farm()
