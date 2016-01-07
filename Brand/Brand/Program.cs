@@ -186,10 +186,10 @@ namespace Brand
                     E.CastOnUnit(target);
             if (MenuIni.SubMenu("Harass").Item("Use_Q").GetValue<bool>())
                 if (Q.IsReady() && target.IsValidTarget(Q.Range))
-                    Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
+                    Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
             if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
                 if (W.IsReady() && target.IsValidTarget(W.Range))
-                    W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
+                    W.CastIfHitchanceEquals(target, Hitchance("Harass", "W_HitChance"), true);
         }
 
         private static void Combo(Obj_AI_Hero target)
@@ -214,15 +214,15 @@ namespace Brand
                         _Ignite.CastOnUnit(target);
                     if (Player.Distance(target.Position) > 300)
                     {
-                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
+                        Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                         E.CastOnUnit(target);
-                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
                     }
                     else
                     {                        
                         E.CastOnUnit(target);
-                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
-                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);                        
+                        Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);                        
                     }
                     if (Rd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
@@ -234,9 +234,9 @@ namespace Brand
                     if (E.IsReady() && Em)
                         E.CastOnUnit(target);
                     if (W.IsReady() && Wm)
-                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
                     if (Qd > target.Health || target.HasBuff("brandablaze"))
-                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);                    
+                        Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);                    
                     if (Rd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                     else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
@@ -246,9 +246,9 @@ namespace Brand
             else
             {
                 if (W.IsReady() && Wm)
-                    W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
+                    W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
                 if (Qd > target.Health || target.HasBuff("brandablaze"))
-                    Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
+                    Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                 if (Rd >= target.Health && R.IsReady() && Rm)
                     R.CastOnUnit(target);
                 else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
@@ -278,10 +278,10 @@ namespace Brand
             }
         }
 
-        private static HitChance Hitchance(string Type)
+        private static HitChance Hitchance(string Type1,string Type2)
         {
             HitChance hit = HitChance.Low;
-            switch (MenuIni.Item(Type).GetValue<Slider>().Value)
+            switch (MenuIni.SubMenu(Type1).Item(Type2).GetValue<Slider>().Value)
             {
                 case 1:
                     hit = HitChance.OutOfRange;
