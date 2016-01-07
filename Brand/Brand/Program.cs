@@ -195,7 +195,7 @@ namespace Brand
                     Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
             if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
                 if (W.IsReady() && target.IsValidTarget(W.Range))
-                    W.Cast(PreCastPos(target,0.6f));
+                    W.Cast(PreCastPos(target,0.4f));
         }
 
         private static void Combo(Obj_AI_Hero target)
@@ -221,7 +221,7 @@ namespace Brand
                     if(target.CountEnemiesInRange(230f) >= 3)
                     {
                         if (W.IsReady() && Wm)
-                            W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
+                            W.Cast(PreCastPos(target,0.4f));
                         if (E.IsReady() && Em)
                            E.CastOnUnit(target);
                         if(R.IsReady() && Rm)
@@ -237,7 +237,7 @@ namespace Brand
                         if (E.IsReady() && Em)
                             E.CastOnUnit(target);                        
                         if(W.IsReady() && Wm)
-                            W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
+                            W.Cast(PreCastPos(target,0.4f));
                     }
                     else
                     {
@@ -246,7 +246,7 @@ namespace Brand
                         if (Qd + Pd > target.Health || target.HasBuff("brandablaze"))
                             Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                         if (W.IsReady() && Wm)
-                            W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);                        
+                            W.Cast(PreCastPos(target,0.4f));                        
                     }
 
                     if (Rd+Pd >= target.Health && R.IsReady() && Rm)
@@ -257,7 +257,7 @@ namespace Brand
                 if (E.IsReady() && Em)
                     E.CastOnUnit(target);
                 if (W.IsReady() && Wm)
-                    W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
+                    W.Cast(PreCastPos(target,0.4f));
                 if (Qd+Pd > target.Health || target.HasBuff("brandablaze"))
                     Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);                    
                 if (Rd+Pd >= target.Health && R.IsReady() && Rm)
@@ -268,7 +268,7 @@ namespace Brand
             else
             {
                 if (W.IsReady() && Wm)
-                    W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
+                    W.Cast(PreCastPos(target,0.4f));
                 if (Qd+Pd > target.Health || target.HasBuff("brandablaze"))
                     Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                 if (Rd+Pd >= target.Health && R.IsReady() && Rm)
