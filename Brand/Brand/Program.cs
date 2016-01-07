@@ -243,7 +243,7 @@ namespace Brand
                         R.CastOnUnit(target);
                 }
             }
-            else if (Player.Distance(target.Position) > E.Range && Player.Distance(target.Position) < W.Range)
+            else if (Player.Distance(target.Position) < W.Range)
             {
                 if (W.IsReady() && Wm)
                     W.CastIfHitchanceEquals(target, Hitchance("Use_W"), true);
