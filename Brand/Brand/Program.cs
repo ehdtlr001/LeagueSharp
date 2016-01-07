@@ -14,6 +14,7 @@ namespace Brand
     {
         private static Obj_AI_Hero Player = ObjectManager.Player;
         private static Spell Q = new Spell(SpellSlot.Q, 1050f, TargetSelector.DamageType.Magical);
+        private static Spell Qn = new Spell(SpellSlot.Q, 1050f, TargetSelector.DamageType.Magical);
         private static Spell W = new Spell(SpellSlot.W, 900f, TargetSelector.DamageType.Magical);
         private static Spell E = new Spell(SpellSlot.E, 625f, TargetSelector.DamageType.Magical);
         private static Spell R = new Spell(SpellSlot.R, 750f, TargetSelector.DamageType.Magical);
@@ -33,6 +34,7 @@ namespace Brand
             if (Player.ChampionName != "Brand") return;
 
             Q.SetSkillshot(0.625f, 50f, 1550f, true, SkillshotType.SkillshotLine);
+            Qn.SetSkillshot(0.625f, 50f, 1550f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(1f, 240f, int.MaxValue, false, SkillshotType.SkillshotCircle);
 
             var Ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
@@ -188,7 +190,7 @@ namespace Brand
             if (MenuIni.SubMenu("Harass").Item("Use_E").GetValue<bool>())
                 if (E.IsReady() && target.IsValidTarget(E.Range))
                     E.CastOnUnit(target);
-            if (MenuIni.SubMenu("Combo").Item("Use_Q").GetValue<bool>())
+            if (MenuIni.SubMenu("Harass").Item("Use_Q").GetValue<bool>())
                 if (Q.IsReady() && target.IsValidTarget(Q.Range))
                     Q.CastIfHitchanceEquals(target, Hitchance("Harass", "Q_HitChance"), true);
             if (MenuIni.SubMenu("Harass").Item("Use_W").GetValue<bool>())
@@ -217,21 +219,41 @@ namespace Brand
                 {
                     if (GetDamage(target) > target.Health)
                         _Ignite.CastOnUnit(target);
-                    if (Player.Distance(target.ServerPosition) > 300)
+
+                    if(target.CountEnemiesInRange(230f) >= 3 && W.IsReady() && Wm && E.IsReady())
                     {
-                        Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
-                        E.CastOnUnit(target);
                         W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
+                        E.CastOnUnit(target);
+                        if(R.IsReady() && Rm)
+                            R.CastOnUnit(target);
+                        if(Q.IsReady() && Qm)
+                            Qn.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
+                    }
+
+                    if (Player.Distance(target.ServerPosition) >= 200)
+                    {
+                        if (Q.IsReady() && Qm && E.IsReady() && Em)
+                        {
+                            Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
+                            E.CastOnUnit(target);
+                        }
+                        if(W.IsReady() && Wm)
+                            W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);
                     }
                     else
-                    {                        
-                        E.CastOnUnit(target);
-                        Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
-                        W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);                        
+                    {
+                        if (Q.IsReady() && Qm && E.IsReady() && Em)
+                        {
+                            E.CastOnUnit(target);
+                            Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
+                        }
+                        if (W.IsReady() && Wm)
+                            W.CastIfHitchanceEquals(target, Hitchance("Combo", "W_HitChance"), true);                        
                     }
+
                     if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
-                    else if (Rd+Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                    if (Rd+Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                 }
                 else
@@ -244,7 +266,7 @@ namespace Brand
                         Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);                    
                     if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
-                    else if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                    if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                 }
             }
@@ -256,7 +278,7 @@ namespace Brand
                     Q.CastIfHitchanceEquals(target, Hitchance("Combo", "Q_HitChance"), true);
                 if (Rd+Pd >= target.Health && R.IsReady() && Rm)
                     R.CastOnUnit(target);
-                else if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
+                if (Rd + Rd+Pd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
                     R.CastOnUnit(target);
             }           
 
