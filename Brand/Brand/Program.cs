@@ -212,7 +212,7 @@ namespace Brand
                 {
                     if (GetDamage(target) > target.Health)
                         _Ignite.CastOnUnit(target);
-                    if (Player.Distance(target) > 300)
+                    if (Player.Distance(target.Position) > 300)
                     {
                         Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);
                         E.CastOnUnit(target);
