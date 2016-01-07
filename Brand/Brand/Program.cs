@@ -201,7 +201,7 @@ namespace Brand
             var Em = MenuIni.SubMenu("Combo").Item("Use_E").GetValue<bool>();
             var Rm = MenuIni.SubMenu("Combo").Item("Use_R").GetValue<bool>();
             var Qcoll = Q.GetPrediction(target).CollisionObjects.OrderBy(unit => unit.Distance(Player.ServerPosition)).FirstOrDefault();
-            var QcollC = (Qcoll.Distance(target) < 55) ? true : false;
+            var QcollC = (Qcoll.Distance(target) > 55) ? true : false;
             var Qd = Damage.GetSpellDamage(Player, target, SpellSlot.Q);
             var Rd = Damage.GetSpellDamage(Player, target, SpellSlot.R);
             var Igd = Damage.GetSummonerSpellDamage(Player, target, Damage.SummonerSpell.Ignite);
@@ -212,17 +212,17 @@ namespace Brand
                 {
                     if (GetDamage(target) > target.Health)
                         _Ignite.CastOnUnit(target);
-                    if (Player.Distance(target.Position) > 300)
+                    if (Player.Distance(target.Position) > 300 && QcollC)
                     {
-                        Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);
+                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
                         E.CastOnUnit(target);
-                        W.CastIfHitchanceEquals(target, Hitchance("Use_W"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
                     }
-                    else
+                    else if (QcollC)
                     {                        
                         E.CastOnUnit(target);
-                        Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);
-                        W.CastIfHitchanceEquals(target, Hitchance("Use_W"), true);                        
+                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);                        
                     }
                     if (Rd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
@@ -234,9 +234,9 @@ namespace Brand
                     if (E.IsReady() && Em)
                         E.CastOnUnit(target);
                     if (W.IsReady() && Wm)
-                        W.CastIfHitchanceEquals(target, Hitchance("Use_W"), true);
+                        W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
                     if (Qd > target.Health || target.HasBuff("brandablaze"))
-                        Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);                    
+                        Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);                    
                     if (Rd >= target.Health && R.IsReady() && Rm)
                         R.CastOnUnit(target);
                     else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
@@ -246,9 +246,9 @@ namespace Brand
             else if (Player.Distance(target.Position) < W.Range)
             {
                 if (W.IsReady() && Wm)
-                    W.CastIfHitchanceEquals(target, Hitchance("Use_W"), true);
+                    W.CastIfHitchanceEquals(target, Hitchance("W_HitChance"), true);
                 if (Qd > target.Health || target.HasBuff("brandablaze"))
-                    Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);
+                    Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
                 if (Rd >= target.Health && R.IsReady() && Rm)
                     R.CastOnUnit(target);
                 else if (Rd + Rd >= target.Health && target.CountEnemiesInRange(R.Range) >= 2 && R.IsReady() && Rm)
@@ -257,7 +257,7 @@ namespace Brand
             else if (target.IsValidTarget(Q.Range))
             {
                 if (Qd > target.Health || target.HasBuff("brandablaze"))
-                    Q.CastIfHitchanceEquals(target, Hitchance("Use_Q"), true);
+                    Q.CastIfHitchanceEquals(target, Hitchance("Q_HitChance"), true);
             }
 
             if(Igd > target.Health)
