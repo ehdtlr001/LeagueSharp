@@ -234,7 +234,7 @@ namespace Brand
                             Qn.CastIfHitchanceEquals(target, Hitchance("Combo", "CQ_HitChance"), true);
                     }
 
-                    if (Player.Distance(target.ServerPosition) >= 300)
+                    if (Player.Distance(target.ServerPosition) >= 400)
                     {
                         if (Q.IsReady() && Qm && E.IsReady() && Em)
                             Q.CastIfHitchanceEquals(target, Hitchance("Combo", "CQ_HitChance"), true);
