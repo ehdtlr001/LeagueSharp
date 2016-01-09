@@ -229,8 +229,8 @@ namespace Karthus
 
             if (Wm && W.IsReady() && WTarget.IsValid)
             {
-                double DS = W.ManaCost;
-                double countmana = 0;
+                double DS = 0;
+                double countmana = W.ManaCost;
 
                 if (R.IsReady())
                 {
