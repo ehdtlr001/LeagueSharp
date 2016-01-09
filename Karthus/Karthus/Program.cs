@@ -36,6 +36,8 @@ namespace Karthus
         {
             if (Player.ChampionName != "Karthus") return;
 
+            Check = new Check();
+
             Q.SetSkillshot(1f, 160f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(.5f, 70f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(1f, 505f, float.MaxValue, false, SkillshotType.SkillshotCircle);
