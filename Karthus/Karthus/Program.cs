@@ -131,8 +131,6 @@ namespace Karthus
 
         private static void OnDraw(EventArgs args)
         {
-            Drawing.DrawText(Drawing.Width * 0.44f, Drawing.Height * 0.7f, System.Drawing.Color.Red, Utility.GetRecallTime(Player).ToString());
-
             if (!Player.IsDead)
             {
                 if (MenuIni.SubMenu("Draw").Item("Draw_Q").GetValue<Circle>().Active)
