@@ -56,9 +56,8 @@ namespace Karthus
             Combo.AddItem(new MenuItem("CUse_Q", "CUse_Q").SetValue(true));
             Combo.AddItem(new MenuItem("CUse_W", "CUse_W").SetValue(true));
             Combo.AddItem(new MenuItem("CUse_E", "CUse_E").SetValue(true));
-            Combo.AddItem(new MenuItem("CUse_R", "CUse_R").SetValue(true));
             Combo.AddItem(new MenuItem("CUse_AA", "CUse_AA").SetValue(true));
-            Combo.AddItem(new MenuItem("CEPercent", "Use E Mana %").SetValue(new Slider(15)));
+            Combo.AddItem(new MenuItem("CEPercent", "Use E Mana %").SetValue(new Slider(30)));
             MenuIni.AddSubMenu(Combo);
 
             var Harass = new Menu("Harass", "Harass");
@@ -240,7 +239,7 @@ namespace Karthus
                     }
                     else if (Player.Distance(ETarget.ServerPosition) >= E.Range || (((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
                     {
-                        calcE();
+                        calcE(true);
                     }
                 }
                 else
