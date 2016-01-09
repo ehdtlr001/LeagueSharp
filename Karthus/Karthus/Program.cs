@@ -38,6 +38,10 @@ namespace Karthus
 
             Check = new Check();
 
+            QTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            WTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+            ETarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
+
             Q.SetSkillshot(1f, Math.Max(30, (1f - (Player.Distance(QTarget) / Q.Range)) * 160f), float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(.5f, 70f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(1f, 505f, float.MaxValue, false, SkillshotType.SkillshotCircle);
@@ -98,9 +102,6 @@ namespace Karthus
             else
                 _Ignite.Slot = SpellSlot.Unknown;
 
-            QTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            WTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
-            ETarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
             var activeOrbwalker = orbwalker.ActiveMode;
             switch (activeOrbwalker)
             {
