@@ -142,7 +142,7 @@ namespace Karthus
 
                 var time = Utils.TickCount;
 
-                foreach (TI target in Program.Check.TI.Where(x => x.Player.IsValid && !x.Player.IsDead && x.Player.IsEnemy && (Program.Check.recalltc(x) || x.Player.IsVisible && Utility.IsValidTarget(x.Player)) && Player.GetSpellDamage(x.Player, SpellSlot.R) >= Program.Check.GetTargetHealth(x, (int)(R.Delay * 1000f))))
+                foreach (TI target in Program.Check.TI.Where(x => x.Player.IsValid && !x.Player.IsDead && x.Player.IsEnemy && (Program.Check.recalltc(x) || (x.Player.IsVisible && Utility.IsValidTarget(x.Player))) && Player.GetSpellDamage(x.Player, SpellSlot.R) >= Program.Check.GetTargetHealth(x, (int)(R.Delay * 1000f))))
                 {
                     killable += target.Player.ChampionName + " ";
                 }
@@ -223,7 +223,7 @@ namespace Karthus
             }
 
             if (Wm && W.IsReady() && WTarget.IsValid)
-                W.Cast(WTarget.Position);
+                W.Cast(PredPos(WTarget, 0.2f));
 
             if (Em && E.IsReady() && !Player.IsZombie)
             {
