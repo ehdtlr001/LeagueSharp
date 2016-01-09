@@ -300,7 +300,7 @@ namespace Karthus
                     }
 
                     var location = MinionManager.GetBestCircularFarmLocation(positions, 200f, Q.Range);
-                    MinionManager.FarmLocation.
+
                     if (location.MinionsHit == 1)
                         Q.Cast(location.Position);
                 }
