@@ -120,7 +120,7 @@ namespace Karthus
             }
         }
 
-        private static void OnDraw(EventArgs args)
+        void OnDraw(EventArgs args)
         {
             if(!Player.IsDead)
             {
@@ -180,7 +180,7 @@ namespace Karthus
             return (path[path.Count - 1]).To3D();
         }
 
-        private static void calcE(bool TC = false)
+        void calcE(bool TC = false)
         {
             if (!E.IsReady() || Player.IsZombie || Player.Spellbook.GetSpell(SpellSlot.E).ToggleState != 2) return;
 
@@ -193,14 +193,14 @@ namespace Karthus
             NowE = false;
         }
 
-        private static void Harass()
+        void Harass()
         {
             if (MenuIni.SubMenu("Harass").Item("HUse_Q").GetValue<bool>())
                 if (Q.IsReady() && QTarget.IsValidTarget(Q.Range))
                     Q.Cast(PredPos(QTarget, 0.6f));
         }
 
-        private static bool Combo()
+        bool Combo()
         {
             bool Qtarget = false;
 
