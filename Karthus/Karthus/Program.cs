@@ -38,10 +38,6 @@ namespace Karthus
 
             Check = new Check();
 
-            QTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            WTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
-            ETarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
-
             Q.SetSkillshot(1f, 160f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             W.SetSkillshot(.5f, 70f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(1f, 505f, float.MaxValue, false, SkillshotType.SkillshotCircle);
@@ -95,6 +91,10 @@ namespace Karthus
         private static void OnUpdate(EventArgs args)
         {
             if (Player.IsDead) return;
+
+            QTarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            WTarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+            ETarget = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
 
             var Ignite = Player.Spellbook.Spells.FirstOrDefault(spell => spell.Name == "summonerdot");
             if (Ignite != null && MenuIni.SubMenu("Misc").Item("Ignite").GetValue<bool>())
