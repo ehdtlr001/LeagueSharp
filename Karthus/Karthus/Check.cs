@@ -65,12 +65,12 @@ namespace Karthus
         {
             if (ti.Player.HasBuff("exaltedwithbaronnashor"))
             {
-                if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) > 4)
+                if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) < 4)
                     return true;
                 else
                     return false;
             }
-            else if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) > 10)
+            else if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) < 10)
             {
                 return true;
             }

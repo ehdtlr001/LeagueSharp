@@ -268,8 +268,8 @@ namespace Karthus
             bool jgm;
             List<Obj_AI_Base> minions;
 
-            if (canQ && Q.IsReady())
-            {
+            //if (canQ && Q.IsReady())
+            //{
                 minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                 minions.RemoveAll(x => x.MaxHealth <= 5);
                 var positions = new List<Vector2>();
@@ -283,7 +283,7 @@ namespace Karthus
 
                 if (location.MinionsHit >= 1)
                     Q.Cast(location.Position);
-            }
+//            }
 
             if (!canE || !E.IsReady() || Player.IsZombie)
                 return;
