@@ -249,7 +249,7 @@ namespace Karthus
                     calcE();
             }
 
-            if (Qm && Q.IsReady())
+            if (Qm && Q.IsReady() && QTarget.IsValid)
             {
                 if (QTarget != null)
                 {
@@ -289,7 +289,7 @@ namespace Karthus
                 }
                 else
                 {
-                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.Health);
+                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                     minions.RemoveAll(x => x.MaxHealth <= 5);
                     minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q)*2);
                     var positions = new List<Vector2>();
@@ -299,8 +299,8 @@ namespace Karthus
                         positions.Add(minion.ServerPosition.To2D());
                     }
 
-                    var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
-
+                    var location = MinionManager.GetBestCircularFarmLocation(positions, 200f, Q.Range);
+                    MinionManager.FarmLocation.
                     if (location.MinionsHit == 1)
                         Q.Cast(location.Position);
                 }

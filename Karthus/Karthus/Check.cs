@@ -77,5 +77,13 @@ namespace Karthus
             else
                 return false;
         }
+
+        public static T GetSafeMenuItem<T>(MenuItem item)
+        {
+            if (item != null)
+                return item.GetValue<T>();
+
+            return default(T);
+        }
     }
 }
