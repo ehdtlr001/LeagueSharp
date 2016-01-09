@@ -217,7 +217,10 @@ namespace Karthus
             var Wm = MenuIni.SubMenu("Combo").Item("CUse_W").GetValue<bool>();
             var Em = MenuIni.SubMenu("Combo").Item("CUse_E").GetValue<bool>();
 
-            if (QTarget.IsValid && Player.Distance(QTarget.Position) < _Ignite.Range)
+            if (QTarget == null && WTarget == null && ETarget == null)
+                return false;
+
+            if (Player.Distance(QTarget.Position) < _Ignite.Range)
             {
                 var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
                 if (Igd > QTarget.Health)
@@ -255,7 +258,6 @@ namespace Karthus
                     Qtarget = true;
                     Q.Cast(PredPos(QTarget, 0.6f));
                 }
-                else return Qtarget;
             }
 
             return Qtarget;
