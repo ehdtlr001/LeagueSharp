@@ -217,10 +217,10 @@ namespace Karthus
             var Wm = MenuIni.SubMenu("Combo").Item("CUse_W").GetValue<bool>();
             var Em = MenuIni.SubMenu("Combo").Item("CUse_E").GetValue<bool>();
 
-            if (QTarget == null && WTarget == null && ETarget == null)
+            if (WTarget == null)
                 return false;
 
-            if (Player.Distance(QTarget.Position) < _Ignite.Range)
+            if (QTarget.IsValid && Player.Distance(QTarget.Position) < _Ignite.Range)
             {
                 var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
                 if (Igd > QTarget.Health)
@@ -228,7 +228,31 @@ namespace Karthus
             }
 
             if (Wm && W.IsReady() && WTarget.IsValid)
-                W.Cast(PredPos(WTarget, 0.2f));
+            {
+                double DS = 0;
+                double countmana = 0;
+
+                if (R.IsReady())
+                {
+                    DS += Damage.GetSpellDamage(Player, QTarget, SpellSlot.R);
+                    countmana += R.ManaCost;
+                }
+
+                while (DS < QTarget.MaxHealth)
+                {
+                    var Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q) * 2;
+
+                    if (QTarget.GetEnemiesInRange(180f).Count > 1)
+                        Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q);
+
+                    DS += Qd;
+                    countmana += Q.ManaCost;
+                }
+                
+
+                if (Player.MaxMana > countmana || QTarget.GetAlliesInRange(W.Range).Count > 1)
+                    W.Cast(PredPos(WTarget, 0.2f));
+            }
 
             if (Em && E.IsReady() && !Player.IsZombie)
             {
