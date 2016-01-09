@@ -68,7 +68,7 @@ namespace Karthus
 
             var Farm = new Menu("Farm", "Farm");
             Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
-            Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("Q use only one minion").SetValue(true));
+            //Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("Q use only one minion").SetValue(true));
             Farm.AddItem(new MenuItem("FUse_E", "FUse_E").SetValue(true));
             Farm.AddItem(new MenuItem("FEPercent", "Use E Mana %").SetValue(new Slider(15)));
             MenuIni.AddSubMenu(Farm);
@@ -273,8 +273,8 @@ namespace Karthus
 
             if (canQ && Q.IsReady())
             {
-                if (!QtoOne)
-                {
+                //if (!QtoOne)
+                //{
                     minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                     minions.RemoveAll(x => x.MaxHealth <= 5);
                     var positions = new List<Vector2>();
@@ -288,7 +288,7 @@ namespace Karthus
 
                     if (location.MinionsHit >= 1)
                         Q.Cast(location.Position);
-                }
+                /*}
                 else
                 {
                     minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
@@ -305,7 +305,7 @@ namespace Karthus
 
                     if (location.MinionsHit == 1)
                         Q.Cast(location.Position);
-                }
+                }*/
             }
 
             if (!canE || !E.IsReady() || Player.IsZombie)
