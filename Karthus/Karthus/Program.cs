@@ -34,6 +34,8 @@ namespace Karthus
 
         private static void Game_OnGameLoad(EventArgs args)
         {
+            if (Player.ChampionName != "Karthus") return;
+
             Check = new Check();
 
             Q.SetSkillshot(1f, Math.Max(30, (1f - (Player.Distance(QTarget) / Q.Range)) * 160f), float.MaxValue, false, SkillshotType.SkillshotCircle);
