@@ -216,11 +216,10 @@ namespace Karthus
             var Qm = MenuIni.SubMenu("Combo").Item("CUse_Q").GetValue<bool>();
             var Wm = MenuIni.SubMenu("Combo").Item("CUse_W").GetValue<bool>();
             var Em = MenuIni.SubMenu("Combo").Item("CUse_E").GetValue<bool>();
-            var Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q);
-            var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
 
             if (Player.Distance(QTarget.Position) < _Ignite.Range)
             {
+                var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
                 if (Igd > QTarget.Health)
                     _Ignite.CastOnUnit(QTarget);
             }
