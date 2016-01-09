@@ -68,7 +68,7 @@ namespace Karthus
 
             var Farm = new Menu("Farm", "Farm");
             Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
-            Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("0 = false, 1 = true").SetValue(new Slider(0, 0, 1)));
+            Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("Q use only one minion").SetValue(true));
             Farm.AddItem(new MenuItem("FUse_E", "FUse_E").SetValue(true));
             Farm.AddItem(new MenuItem("FEPercent", "Use E Mana %").SetValue(new Slider(15)));
             MenuIni.AddSubMenu(Farm);
@@ -271,19 +271,39 @@ namespace Karthus
 
             if (canQ && Q.IsReady())
             {
-                minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-                minions.RemoveAll(x => x.MaxHealth <= 5);
-                var positions = new List<Vector2>();
-
-                foreach(var minion in minions)
+                if (!QtoOne)
                 {
-                    positions.Add(minion.ServerPosition.To2D());
+                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+                    minions.RemoveAll(x => x.MaxHealth <= 5);
+                    var positions = new List<Vector2>();
+
+                    foreach (var minion in minions)
+                    {
+                        positions.Add(minion.ServerPosition.To2D());
+                    }
+
+                    var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
+
+                    if (location.MinionsHit >= 1)
+                        Q.Cast(location.Position);
                 }
+                else
+                {
+                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly, MinionOrderTypes.Health);
+                    minions.RemoveAll(x => x.MaxHealth <= 5);
+                    minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q)*2);
+                    var positions = new List<Vector2>();
 
-                var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
+                    foreach (var minion in minions)
+                    {
+                        positions.Add(minion.ServerPosition.To2D());
+                    }
 
-                if (location.MinionsHit >= 1)
-                    Q.Cast(location.Position);
+                    var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
+
+                    if (location.MinionsHit == 1)
+                        Q.Cast(location.Position);
+                }
             }
 
             if (!canE || !E.IsReady() || Player.IsZombie)
