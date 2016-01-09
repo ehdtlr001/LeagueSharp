@@ -255,6 +255,7 @@ namespace Karthus
                     Qtarget = true;
                     Q.Cast(PredPos(QTarget, 0.6f));
                 }
+                else return Qtarget;
             }
 
             return Qtarget;
