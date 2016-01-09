@@ -270,8 +270,14 @@ namespace Karthus
             {
                 minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                 minions.RemoveAll(x => x.MaxHealth <= 5);
+                var positions = new List<Vector2>();
 
-                var location = Q.GetCircularFarmLocation(minions, Q.Width);
+                foreach(var minion in minions)
+                {
+                    positions.Add(minion.ServerPosition.To2D());
+                }
+
+                var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
 
                 if (location.MinionsHit >= 1)
                     Q.Cast(location.Position);
