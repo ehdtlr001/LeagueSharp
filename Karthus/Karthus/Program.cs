@@ -267,7 +267,7 @@ namespace Karthus
         {
             var canQ = Can || MenuIni.SubMenu("Farm").Item("FUse_Q").GetValue<bool>();
             var canE = Can || MenuIni.SubMenu("Farm").Item("FUse_E").GetValue<bool>();
-            bool QtoOne = MenuIni.SubMenu("Farm").Item("Q_to_One").GetValue<bool>();
+            //bool QtoOne = MenuIni.SubMenu("Farm").Item("Q_to_One").GetValue<bool>();
             bool jgm;
             List<Obj_AI_Base> minions;
 
