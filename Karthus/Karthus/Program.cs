@@ -108,7 +108,7 @@ namespace Karthus
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     orbwalker.SetAttack(true);
-                    Farm();
+                    Farm(false);
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
                     orbwalker.SetAttack(true);
