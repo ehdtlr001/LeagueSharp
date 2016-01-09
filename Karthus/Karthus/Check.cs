@@ -42,7 +42,7 @@ namespace Karthus
         {
             var time = Utils.TickCount;
 
-            foreach (TI ti in TI.Where(x => x.Player.IsVisible))
+            foreach (TI ti in TI.Where(x => x.Player.IsVisible && !x.Player.IsRecalling()))
                 ti.timeCheck = time;
         }
 
@@ -67,11 +67,6 @@ namespace Karthus
             {
                 if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) < 4)
                 {
-                    if (ti.Player.IsVisible && ti.Player.IsRecalling())
-                    {
-                        if (!ti.Player.IsVisible)
-                            return false;
-                    }
                     return true;
                 }
                 else
@@ -79,11 +74,6 @@ namespace Karthus
             }
             else if (((Utils.TickCount - ti.timeCheck + 3000f) / 1000f) < 10)
             {
-                if (ti.Player.IsVisible && ti.Player.IsRecalling())
-                {
-                    if (!ti.Player.IsVisible)
-                        return false;
-                }
                 return true;
             }
             else
