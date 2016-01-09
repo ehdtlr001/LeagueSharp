@@ -10,7 +10,7 @@ using Color = System.Drawing.Color;
 
 namespace Karthus
 {
-    class Karthus
+    internal class Karthus
     {
         private static Obj_AI_Hero Player = ObjectManager.Player;
         private static Spell Q = new Spell(SpellSlot.Q, 875f, TargetSelector.DamageType.Magical);
