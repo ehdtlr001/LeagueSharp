@@ -250,7 +250,7 @@ namespace Karthus
                 }
                 
 
-                if (Player.MaxMana > countmana || QTarget.GetAlliesInRange(W.Range).Count > 1)
+                if (Player.MaxMana > countmana || QTarget.GetAlliesInRange(W.Range).Count > 1 || Player.IsZombie)
                     W.Cast(PredPos(WTarget, 0.2f));
             }
 
