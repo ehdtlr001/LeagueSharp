@@ -68,6 +68,7 @@ namespace Karthus
 
             var Farm = new Menu("Farm", "Farm");
             Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
+            Farm.AddItem(new MenuItem("FQPercent", "Use Q Mana %").SetValue(new Slider(15)));
             //Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("Q use only one minion").SetValue(true));
             Farm.AddItem(new MenuItem("FUse_E", "FUse_E").SetValue(true));
             Farm.AddItem(new MenuItem("FEPercent", "Use E Mana %").SetValue(new Slider(15)));
@@ -295,7 +296,7 @@ namespace Karthus
             bool jgm;
             List<Obj_AI_Base> minions;
 
-            if (canQ && Q.IsReady())
+            if (canQ && Q.IsReady() && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Farm").Item("FQPercent").GetValue<Slider>().Value))
             {
                 //if (!QtoOne)
                 //{
