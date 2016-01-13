@@ -60,7 +60,7 @@ namespace Karthus
             Combo.AddItem(new MenuItem("CUse_E", "CUse_E").SetValue(true));
             Combo.AddItem(new MenuItem("CUse_AA", "CUse_AA").SetValue(true));
             Combo.AddItem(new MenuItem("CEPercent", "Use E Mana %").SetValue(new Slider(30)));
-            Combo.AddItem(new MenuItem("CE_Auto_False", "CE_Auto_False").SetValue(true));
+            Combo.AddItem(new MenuItem("CE_Auto_False", "CE_Auto_False").SetTooltip("E auto false when target isn't valid").SetValue(true));
             MenuIni.AddSubMenu(Combo);
 
             var Harass = new Menu("Harass", "Harass");
