@@ -218,7 +218,7 @@ namespace Karthus
             var Qm = MenuIni.SubMenu("Combo").Item("CUse_Q").GetValue<bool>();
             var Wm = MenuIni.SubMenu("Combo").Item("CUse_W").GetValue<bool>();
             var Em = MenuIni.SubMenu("Combo").Item("CUse_E").GetValue<bool>();
-            var EFm = MenuIni.SubMenu("Combo").Item("E_Auto_False").GetValue<bool>();
+            var EFm = MenuIni.SubMenu("Combo").Item("CE_Auto_False").GetValue<bool>();
 
             if (WTarget == null)
                 return false;
