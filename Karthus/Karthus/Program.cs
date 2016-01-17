@@ -394,7 +394,7 @@ namespace Karthus
                         {
                             foreach(int yj in j)
                             {
-                                int cnt = 1;
+                                int cnt = 0;
                                 Vector3 temp = new Vector3(Prediction.GetPrediction(minion, 250f).UnitPosition.X + xi, Prediction.GetPrediction(minion, 250f).UnitPosition.Y + yj, Prediction.GetPrediction(minion, 250f).UnitPosition.Z);
                                 foreach(var minion2 in minions2.Where(x => Vector3.Distance(temp, Prediction.GetPrediction(x, 250f).UnitPosition) < 200))
                                 {
