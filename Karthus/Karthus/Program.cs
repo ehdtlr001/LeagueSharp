@@ -240,7 +240,7 @@ namespace Karthus
                 if ((Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1 && (minions.Count >= 1 || jgm)) && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
                     E.Cast();
                 else if ((Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 2 && (minions.Count == 0 && !jgm)) || !(((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
-                    calcE();
+                    calcE(true);
             }
 
             if (MenuIni.SubMenu("Harass").Item("HUse_E").GetValue<bool>() && E.IsReady() && !Player.IsZombie)
