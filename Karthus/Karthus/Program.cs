@@ -79,7 +79,7 @@ namespace Karthus
             MenuIni.AddSubMenu(Farm);
 
             var LastHit = new Menu("LastHit", "LastHit");
-            Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
+            LastHit.AddItem(new MenuItem("LUse_Q", "LUse_Q").SetValue(true));
             MenuIni.AddSubMenu(LastHit);
 
             var Misc = new Menu("Misc", "Misc");
@@ -398,31 +398,34 @@ namespace Karthus
 
         private static void LastHit()
         {
-            List<Obj_AI_Base> minions, minions2;
-
-            minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
-            minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            minions.RemoveAll(x => x.MaxHealth <= 5);
-            minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q));
-            var i = new List<int>() { -100, -70, 0, 70, 100 };
-            var j = new List<int>() { -100, -70, 0, 70, 100 };
-
-            foreach (var minion in minions)
+            if (MenuIni.SubMenu("LastHit").Item("LUse_Q").GetValue<bool>())
             {
-                foreach (int xi in i)
-                {
-                    foreach (int yj in j)
-                    {
-                        int cnt = 0;
-                        Vector3 temp = new Vector3(Prediction.GetPrediction(minion, 250f).UnitPosition.X + xi, Prediction.GetPrediction(minion, 250f).UnitPosition.Y + yj, Prediction.GetPrediction(minion, 250f).UnitPosition.Z);
-                        foreach (var minion2 in minions2.Where(x => Vector3.Distance(temp, Prediction.GetPrediction(x, 250f).UnitPosition) < 200))
-                        {
-                            cnt++;
-                        }
+                List<Obj_AI_Base> minions, minions2;
 
-                        if (cnt == 1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q))
+                minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
+                minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+                minions.RemoveAll(x => x.MaxHealth <= 5);
+                minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q));
+                var i = new List<int>() { -100, -70, 0, 70, 100 };
+                var j = new List<int>() { -100, -70, 0, 70, 100 };
+
+                foreach (var minion in minions)
+                {
+                    foreach (int xi in i)
+                    {
+                        foreach (int yj in j)
                         {
-                            Q.Cast(temp);
+                            int cnt = 0;
+                            Vector3 temp = new Vector3(Prediction.GetPrediction(minion, 250f).UnitPosition.X + xi, Prediction.GetPrediction(minion, 250f).UnitPosition.Y + yj, Prediction.GetPrediction(minion, 250f).UnitPosition.Z);
+                            foreach (var minion2 in minions2.Where(x => Vector3.Distance(temp, Prediction.GetPrediction(x, 250f).UnitPosition) < 200))
+                            {
+                                cnt++;
+                            }
+
+                            if (cnt == 1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q))
+                            {
+                                Q.Cast(temp);
+                            }
                         }
                     }
                 }
