@@ -68,6 +68,7 @@ namespace Karthus
             Harass.AddItem(new MenuItem("HUse_E", "HUse_E").SetValue(true));
             Harass.AddItem(new MenuItem("HEPercent", "Use E Mana %").SetValue(new Slider(30)));
             Harass.AddItem(new MenuItem("HUse_AA", "HUse_AA").SetValue(true));
+            Harass.AddItem(new MenuItem("HUse_AA_to_minion", "HUse_AA_to_minion").SetTooltip("Use_AA_to_minion_for_lasthit").SetValue(true));
             Harass.AddItem(new MenuItem("E_LastHit", "E_LastHit").SetTooltip("Use E when killable minion is valid in range ").SetValue(true));
             Harass.AddItem(new MenuItem("HE_Auto_False", "HE_Auto_False").SetTooltip("E auto false when target isn't valid").SetValue(true));
             MenuIni.AddSubMenu(Harass);
@@ -125,6 +126,7 @@ namespace Karthus
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
                     orbwalker.SetAttack(MenuIni.SubMenu("Harass").Item("HUse_AA").GetValue<bool>() || Player.Mana < Q.Instance.ManaCost * 3);
+                    Orbwalking.BeforeAttack += BeforeAttack;
                     Harass();
                     break;
                 case Orbwalking.OrbwalkingMode.LastHit:
@@ -167,6 +169,19 @@ namespace Karthus
                 if (killable != "" && MenuIni.SubMenu("Misc").Item("NotifyUlt").GetValue<bool>())
                 {
                     Drawing.DrawText(Drawing.Width * 0.44f, Drawing.Height * 0.7f, System.Drawing.Color.Red, "Killable by ult: " + killable);
+                }
+            }
+        }
+
+        private static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if (!(MenuIni.SubMenu("Harass").Item("HUse_AA_to_minion").GetValue<bool>()))
+                return;
+            else
+            {
+                if(args.Target.Type == GameObjectType.obj_AI_Minion)
+                {
+                    args.Process = false;
                 }
             }
         }
