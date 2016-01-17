@@ -287,10 +287,7 @@ namespace Karthus
 
                 while (DS < QTarget.MaxHealth)
                 {
-                    var Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q) * 2;
-
-                    if (QTarget.GetEnemiesInRange(180f).Count > 1)
-                        Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q);
+                    var Qd = Damage.GetSpellDamage(Player, QTarget, SpellSlot.Q);
 
                     DS += Qd;
                     countmana += Q.ManaCost;
@@ -298,7 +295,7 @@ namespace Karthus
                 
 
                 if (Player.MaxMana > countmana || QTarget.GetAlliesInRange(W.Range).Count > 1 || Player.IsZombie)
-                    W.Cast(PredPos(WTarget, 0.2f));
+                    W.Cast(PredPos(WTarget, 0.3f));
             }
 
             if (Em && E.IsReady() && !Player.IsZombie)
@@ -384,6 +381,7 @@ namespace Karthus
                     minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
                     minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                     minions.RemoveAll(x => x.MaxHealth <= 5);
+                    minions.RemoveAll(x => x.MaxHealth > Damage.GetSpellDamage(Player, x, SpellSlot.Q));
                     var i = new List<int>() { -100, -70, 0, 70, 100 };
                     var j = new List<int>() { -100, -70, 0, 70, 100 };
 
