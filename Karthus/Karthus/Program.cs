@@ -176,14 +176,14 @@ namespace Karthus
         private static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
             if (MenuIni.SubMenu("Harass").Item("HUse_AA_to_minion").GetValue<bool>())
+                return;
+            else
             {
                 if (args.Target.Type == GameObjectType.obj_AI_Minion)
                 {
                     args.Process = false;
                 }
             }
-            else
-                return;
         }
 
         private static Vector3 PredPos(Obj_AI_Hero Hero, float Delay)
