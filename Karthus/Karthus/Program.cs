@@ -384,7 +384,7 @@ namespace Karthus
                     minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
                     minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
                     minions.RemoveAll(x => x.MaxHealth <= 5);
-                    minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q) * 2);
+                    minions.RemoveAll(x => x.Health < Damage.GetSpellDamage(Player, x, SpellSlot.Q) * 2);
                     var i = new List<int>() { -100, -70, 0, 70, 100 };
                     var j = new List<int>() { -100, -70, 0, 70, 100 };
 
