@@ -400,7 +400,7 @@ namespace Karthus
                                     cnt++;
                                 }
 
-                                if(cnt==1 && minion.Health < Damage.GetSpellDamage(Player, x, SpellSlot.Q) * 2)
+                                if(cnt==1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q) * 2)
                                 {
                                     Q.Cast(temp);
                                 }
