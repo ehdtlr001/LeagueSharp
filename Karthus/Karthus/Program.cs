@@ -74,10 +74,13 @@ namespace Karthus
             var Farm = new Menu("Farm", "Farm");
             Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
             Farm.AddItem(new MenuItem("FQPercent", "Use Q Mana %").SetValue(new Slider(15)));
-            Farm.AddItem(new MenuItem("Q_to_One", "Q_to_One").SetTooltip("Q use only one minion").SetValue(true));
             Farm.AddItem(new MenuItem("FUse_E", "FUse_E").SetValue(true));
             Farm.AddItem(new MenuItem("FEPercent", "Use E Mana %").SetValue(new Slider(15)));
             MenuIni.AddSubMenu(Farm);
+
+            var LastHit = new Menu("LastHit", "LastHit");
+            Farm.AddItem(new MenuItem("FUse_Q", "FUse_Q").SetValue(true));
+            MenuIni.AddSubMenu(LastHit);
 
             var Misc = new Menu("Misc", "Misc");
             Misc.AddItem(new MenuItem("NotifyUlt", "Ult_notify_text").SetValue(true));
@@ -123,6 +126,10 @@ namespace Karthus
                     orbwalker.SetAttack(MenuIni.SubMenu("Harass").Item("HUse_AA").GetValue<bool>() || Player.Mana < Q.Instance.ManaCost * 3);
                     Harass();
                     break;
+                case Orbwalking.OrbwalkingMode.LastHit:
+                    orbwalker.SetAttack(true);
+                    LastHit();
+                    break;
                 default:
                     orbwalker.SetAttack(true);
                     calcE();
@@ -145,7 +152,7 @@ namespace Karthus
                 }
             }
 
-            if(Player.Spellbook.GetSpell(SpellSlot.R).Level > 0)
+            if (Player.Spellbook.GetSpell(SpellSlot.R).Level > 0)
             {
                 var killable = "";
 
@@ -292,7 +299,7 @@ namespace Karthus
                     DS += Qd;
                     countmana += Q.ManaCost;
                 }
-                
+
 
                 if (Player.MaxMana > countmana || QTarget.GetAlliesInRange(W.Range).Count > 1 || Player.IsZombie)
                     W.Cast(PredPos(WTarget, 0.3f));
@@ -335,7 +342,7 @@ namespace Karthus
                         calcE(true);
                     }
                 }
-                    
+
             }
 
             if (Qm && Q.IsReady() && QTarget.IsValid)
@@ -356,56 +363,23 @@ namespace Karthus
             var canE = Can || MenuIni.SubMenu("Farm").Item("FUse_E").GetValue<bool>();
             bool QtoOne = MenuIni.SubMenu("Farm").Item("Q_to_One").GetValue<bool>();
             bool jgm;
-            List<Obj_AI_Base> minions, minions2;
+            List<Obj_AI_Base> minions;
 
             if (canQ && Q.IsReady() && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Farm").Item("FQPercent").GetValue<Slider>().Value))
             {
-                if (!QtoOne)
+                minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+                minions.RemoveAll(x => x.MaxHealth <= 5);
+                var positions = new List<Vector2>();
+
+                foreach (var minion in minions)
                 {
-                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-                    minions.RemoveAll(x => x.MaxHealth <= 5);
-                    var positions = new List<Vector2>();
-
-                    foreach (var minion in minions)
-                    {
-                        positions.Add(minion.ServerPosition.To2D());
-                    }
-
-                    var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
-
-                    if (location.MinionsHit >= 1)
-                        Q.Cast(location.Position);
+                    positions.Add(minion.ServerPosition.To2D());
                 }
-                else
-                {
-                    minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
-                    minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-                    minions.RemoveAll(x => x.MaxHealth <= 5);
-                    minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q));
-                    var i = new List<int>() { -100, -70, 0, 70, 100 };
-                    var j = new List<int>() { -100, -70, 0, 70, 100 };
 
-                    foreach (var minion in minions)
-                    {
-                        foreach (int xi in i)
-                        {
-                            foreach(int yj in j)
-                            {
-                                int cnt = 0;
-                                Vector3 temp = new Vector3(Prediction.GetPrediction(minion, 250f).UnitPosition.X + xi, Prediction.GetPrediction(minion, 250f).UnitPosition.Y + yj, Prediction.GetPrediction(minion, 250f).UnitPosition.Z);
-                                foreach(var minion2 in minions2.Where(x => Vector3.Distance(temp, Prediction.GetPrediction(x, 250f).UnitPosition) < 200))
-                                {
-                                    cnt++;
-                                }
+                var location = MinionManager.GetBestCircularFarmLocation(positions, 160f, Q.Range);
 
-                                if(cnt==1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q))
-                                {
-                                    Q.Cast(temp);
-                                }
-                            }
-                        }
-                    }
-                }
+                if (location.MinionsHit >= 1)
+                    Q.Cast(location.Position);
             }
 
             if (!canE || !E.IsReady() || Player.IsZombie)
@@ -420,6 +394,39 @@ namespace Karthus
                 E.Cast();
             else if ((Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 2 && (minions.Count <= 2 && !jgm)) || !(((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Farm").Item("FEPercent").GetValue<Slider>().Value))
                 calcE();
+        }
+
+        private static void LastHit()
+        {
+            List<Obj_AI_Base> minions, minions2;
+
+            minions2 = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy);
+            minions = MinionManager.GetMinions(Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            minions.RemoveAll(x => x.MaxHealth <= 5);
+            minions.RemoveAll(x => x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.Q));
+            var i = new List<int>() { -100, -70, 0, 70, 100 };
+            var j = new List<int>() { -100, -70, 0, 70, 100 };
+
+            foreach (var minion in minions)
+            {
+                foreach (int xi in i)
+                {
+                    foreach (int yj in j)
+                    {
+                        int cnt = 0;
+                        Vector3 temp = new Vector3(Prediction.GetPrediction(minion, 250f).UnitPosition.X + xi, Prediction.GetPrediction(minion, 250f).UnitPosition.Y + yj, Prediction.GetPrediction(minion, 250f).UnitPosition.Z);
+                        foreach (var minion2 in minions2.Where(x => Vector3.Distance(temp, Prediction.GetPrediction(x, 250f).UnitPosition) < 200))
+                        {
+                            cnt++;
+                        }
+
+                        if (cnt == 1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q))
+                        {
+                            Q.Cast(temp);
+                        }
+                    }
+                }
+            }
         }
     }
 }
