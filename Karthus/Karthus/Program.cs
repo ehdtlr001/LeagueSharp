@@ -68,6 +68,7 @@ namespace Karthus
             Harass.AddItem(new MenuItem("HUse_E", "HUse_E").SetValue(true));
             Harass.AddItem(new MenuItem("HEPercent", "Use E Mana %").SetValue(new Slider(30)));
             Harass.AddItem(new MenuItem("HUse_AA", "HUse_AA").SetValue(true));
+            Harass.AddItem(new MenuItem("E_LastHit", "E_LastHit").SetTooltip("Use E when killable minion is valid in range ").SetValue(true));
             Harass.AddItem(new MenuItem("HE_Auto_False", "HE_Auto_False").SetTooltip("E auto false when target isn't valid").SetValue(true));
             MenuIni.AddSubMenu(Harass);
 
@@ -220,6 +221,27 @@ namespace Karthus
             if (MenuIni.SubMenu("Harass").Item("HUse_Q").GetValue<bool>())
                 if (Q.IsReady() && QTarget.IsValidTarget(Q.Range))
                     Q.Cast(PredPos(QTarget, 0.6f));
+
+            if (MenuIni.SubMenu("Harass").Item("HUse_E").GetValue<bool>() && MenuIni.SubMenu("Harass").Item("E_LastHit").GetValue<bool>() && E.IsReady() && !Player.IsZombie)
+            {
+                if (!E.IsReady() || Player.IsZombie)
+                    return;
+
+                List<Obj_AI_Base> minions;
+                bool jgm;
+
+                NowE = false;
+
+                minions = MinionManager.GetMinions(Player.ServerPosition, E.Range, MinionTypes.All, MinionTeam.NotAlly);
+                minions.RemoveAll(x => x.MaxHealth <= 5);
+                minions.RemoveAll(x => Player.Distance(x.ServerPosition) > E.Range || x.Health > Damage.GetSpellDamage(Player, x, SpellSlot.E));
+                jgm = minions.Any(x => x.Team == GameObjectTeam.Neutral);
+
+                if ((Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1 && (minions.Count >= 1 || jgm)) && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
+                    E.Cast();
+                else if ((Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 2 && (minions.Count == 0 && !jgm)) || !(((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
+                    calcE();
+            }
 
             if (MenuIni.SubMenu("Harass").Item("HUse_E").GetValue<bool>() && E.IsReady() && !Player.IsZombie)
             {
