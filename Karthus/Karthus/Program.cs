@@ -13,6 +13,10 @@ namespace Karthus
     class Program
     {
         public static Check Check;
+
+        private static bool cz = false;
+        private static float czx = 0, czy = 0, czx2 = 0, czy2 = 0;
+
         private static Obj_AI_Hero Player = ObjectManager.Player;
         private static Spell Q = new Spell(SpellSlot.Q, 875f, TargetSelector.DamageType.Magical);
         private static Spell W = new Spell(SpellSlot.W, 1000f, TargetSelector.DamageType.Magical);
@@ -95,8 +99,64 @@ namespace Karthus
             Draw.AddItem(new MenuItem("Draw_Q", "Draw_Q").SetValue(new Circle(true, Color.Green)));
             MenuIni.AddSubMenu(Draw);
 
+            Game.OnUpdate += zigzag;
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
+        }
+
+        private static void zigzag(EventArgs args)
+        {
+            if (QTarget == null)
+            {
+                czx = 0;
+                czx2 = 0;
+                czy = 0;
+                czy2 = 0;
+                return;
+            }
+
+            if (czx < czx2)
+            {
+                if (czx2 >= QTarget.Position.X)
+                    cz = true;
+                else
+                    cz = false;
+            }
+            else if (czx > czx2)
+            {
+                if (czx2 <= QTarget.Position.X)
+                    cz = true;
+                else
+                    cz = false;
+            }
+            else
+            {
+                cz = false;
+                czx = czx2;
+                czx2 = QTarget.Position.X;
+                return;
+            }
+            czx = czx2;
+            czx2 = QTarget.Position.X;
+
+            if (czy < czy2)
+            {
+                if (czy2 >= QTarget.Position.Y)
+                    cz = true;
+                else
+                    cz = false;
+            }
+            else if (czy > czy2)
+            {
+                if (czy2 <= QTarget.Position.Y)
+                    cz = true;
+                else
+                    cz = false;
+            }
+            else
+                cz = false;
+            czy = czy2;
+            czy2 = QTarget.Position.Y;
         }
 
         private static void OnUpdate(EventArgs args)
@@ -233,9 +293,18 @@ namespace Karthus
 
         private static void Harass()
         {
-            if (MenuIni.SubMenu("Harass").Item("HUse_Q").GetValue<bool>())
-                if (Q.IsReady() && QTarget.IsValidTarget(Q.Range))
-                    Q.Cast(PredPos(QTarget, 0.6f));
+            if (QTarget != null)
+            {
+                if (MenuIni.SubMenu("Harass").Item("HUse_Q").GetValue<bool>())
+                    if (Q.IsReady() && QTarget.IsValidTarget(Q.Range))
+                    {
+                        if (!cz)
+                            Q.Cast(PredPos(QTarget, 0.6f));
+                        else
+                            Q.Cast(QTarget);
+                    }
+
+            }
 
             if (MenuIni.SubMenu("Harass").Item("HUse_E").GetValue<bool>() && MenuIni.SubMenu("Harass").Item("E_LastHit").GetValue<bool>() && E.IsReady() && !Player.IsZombie)
             {
@@ -282,17 +351,20 @@ namespace Karthus
                 }
                 else
                 {
-                    if (Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
+                    if (ETarget != null)
                     {
-                        if (Player.Distance(ETarget.ServerPosition) <= E.Range && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
+                        if (Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
                         {
-                            NowE = true;
-                            E.Cast();
+                            if (Player.Distance(ETarget.ServerPosition) <= E.Range && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
+                            {
+                                NowE = true;
+                                E.Cast();
+                            }
                         }
-                    }
-                    else if ((((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
-                    {
-                        calcE(true);
+                        else if ((((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Harass").Item("HEPercent").GetValue<Slider>().Value))
+                        {
+                            calcE(true);
+                        }
                     }
                 }
 
@@ -311,11 +383,14 @@ namespace Karthus
             if (WTarget == null)
                 return false;
 
-            if (QTarget.IsValid && Player.Distance(QTarget.Position) < _Ignite.Range)
+            if (QTarget != null)
             {
-                var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
-                if (Igd > QTarget.Health)
-                    _Ignite.CastOnUnit(QTarget);
+                if (QTarget.IsValid && Player.Distance(QTarget.Position) < _Ignite.Range)
+                {
+                    var Igd = Damage.GetSummonerSpellDamage(Player, QTarget, Damage.SummonerSpell.Ignite);
+                    if (Igd > QTarget.Health)
+                        _Ignite.CastOnUnit(QTarget);
+                }
             }
 
             if (Wm && W.IsReady() && WTarget.IsValid)
@@ -342,11 +417,31 @@ namespace Karthus
                     W.Cast(PredPos(WTarget, 0.3f));
             }
 
-            if (Em && E.IsReady() && !Player.IsZombie)
+            if (ETarget != null)
             {
-                if (EFm)
+                if (Em && E.IsReady() && !Player.IsZombie)
                 {
-                    if (ETarget != null)
+                    if (EFm)
+                    {
+                        if (ETarget != null)
+                        {
+                            if (Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
+                            {
+                                if (Player.Distance(ETarget.ServerPosition) <= E.Range && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
+                                {
+                                    NowE = true;
+                                    E.Cast();
+                                }
+                            }
+                            else if (Player.Distance(ETarget.ServerPosition) >= E.Range || (((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
+                            {
+                                calcE(true);
+                            }
+                        }
+                        else
+                            calcE();
+                    }
+                    else
                     {
                         if (Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
                         {
@@ -356,38 +451,23 @@ namespace Karthus
                                 E.Cast();
                             }
                         }
-                        else if (Player.Distance(ETarget.ServerPosition) >= E.Range || (((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
+                        else if ((((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
                         {
                             calcE(true);
                         }
                     }
-                    else
-                        calcE();
                 }
-                else
-                {
-                    if (Player.Spellbook.GetSpell(SpellSlot.E).ToggleState == 1)
-                    {
-                        if (Player.Distance(ETarget.ServerPosition) <= E.Range && (((Player.Mana / Player.MaxMana) * 100f) >= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
-                        {
-                            NowE = true;
-                            E.Cast();
-                        }
-                    }
-                    else if ((((Player.Mana / Player.MaxMana) * 100f) <= MenuIni.SubMenu("Combo").Item("CEPercent").GetValue<Slider>().Value))
-                    {
-                        calcE(true);
-                    }
-                }
-
             }
 
-            if (Qm && Q.IsReady() && QTarget.IsValid)
+            if (QTarget != null)
             {
-                if (QTarget != null)
+                if (Qm && Q.IsReady() && QTarget.IsValid)
                 {
                     Qtarget = true;
-                    Q.Cast(PredPos(QTarget, 0.6f));
+                    if (!cz)
+                        Q.Cast(PredPos(QTarget, 0.6f));
+                    else
+                        Q.Cast(QTarget);
                 }
             }
 
@@ -398,7 +478,7 @@ namespace Karthus
         {
             var canQ = Can || MenuIni.SubMenu("Farm").Item("FUse_Q").GetValue<bool>();
             var canE = Can || MenuIni.SubMenu("Farm").Item("FUse_E").GetValue<bool>();
-            bool QtoOne = MenuIni.SubMenu("Farm").Item("Q_to_One").GetValue<bool>();
+            //bool QtoOne = MenuIni.SubMenu("Farm").Item("Q_to_One").GetValue<bool>();
             bool jgm;
             List<Obj_AI_Base> minions;
 
@@ -462,6 +542,7 @@ namespace Karthus
                             if (cnt == 1 && minion.Health < Damage.GetSpellDamage(Player, minion, SpellSlot.Q))
                             {
                                 Q.Cast(temp);
+                                break;
                             }
                         }
                     }
