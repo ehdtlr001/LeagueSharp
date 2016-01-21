@@ -122,19 +122,19 @@ namespace Karthus
                 else
                     cz = false;
             }
-            else if (czx > czx2)
-            {
-                if (czx2 <= QTarget.Position.X)
-                    cz = true;
-                else
-                    cz = false;
-            }
-            else
+            else if (czx == czx2)
             {
                 cz = false;
                 czx = czx2;
                 czx2 = QTarget.Position.X;
                 return;
+            }
+            else
+            {
+                if (czx2 <= QTarget.Position.X)
+                    cz = true;
+                else
+                    cz = false;
             }
             czx = czx2;
             czx2 = QTarget.Position.X;
@@ -146,15 +146,15 @@ namespace Karthus
                 else
                     cz = false;
             }
-            else if (czy > czy2)
+            else if (czy == czy2)
+                cz = false;
+            else
             {
                 if (czy2 <= QTarget.Position.Y)
                     cz = true;
                 else
                     cz = false;
             }
-            else
-                cz = false;
             czy = czy2;
             czy2 = QTarget.Position.Y;
         }
